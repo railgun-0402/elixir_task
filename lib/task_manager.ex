@@ -1,17 +1,4 @@
 defmodule TaskManager do
-  @moduledoc """
-  Documentation for `TaskManager`.
-  """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> TaskManager.hello()
-      :world
-
-  """
   def hello do
     :world
   end
@@ -30,15 +17,16 @@ defmodule TaskManager do
 
   # 指定したIDのタスクを完了状態にする
   def complete(tasks, id) do
-    case Map.fetch(tasks, id) do
-      {:ok, task} ->
-        updated_task = %{task | completed: true}
-        updated_tasks = Map.put(tasks, id, updated_task)
-        {:ok, updated_tasks}
-
-      # 存在しないIDはエラー
+    with {:ok, task} <- Map.fetch(tasks, id),
+        :ok <- ensure_not_completed(task) do
+      updated_task = %{task | completed: true}
+      {:ok, Map.put(tasks, id, updated_task)}
+    else
       :error ->
         {:error, :not_found}
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 
@@ -46,4 +34,11 @@ defmodule TaskManager do
   def list_completed(tasks) do
     Map.filter(tasks, fn {_id, task} -> task.completed end)
   end
+
+  defp ensure_not_completed(%{completed: false}), do: :ok
+
+  defp ensure_not_completed(%{completed: true}) do
+    {:error, :already_completed}
+  end
+
 end
