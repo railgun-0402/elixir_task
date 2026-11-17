@@ -4,7 +4,7 @@ defmodule TaskManager do
   end
 
   # タスクは%{id: 1, title: "LPIC", completed: false}の形式
-  # 新しいタスクを追加したListを返す
+  # 新しいタスクを追加したMapを返す
   def add(tasks, id, title) do
     task = %{
       id: id,
