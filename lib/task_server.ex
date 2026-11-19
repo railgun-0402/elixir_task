@@ -2,9 +2,9 @@ defmodule TaskServer do
   use GenServer
 
   # Client API
-  def start_link do
+  def start_link(opts \\ []) do
     # __MODULE__は現在のモジュールを表し、プロセスを初期化
-    GenServer.start_link(__MODULE__, %{}) # 空のMapを作成する
+    GenServer.start_link(__MODULE__, %{}, opts) # 空のMapを作成する
   end
 
   # Server Callback
